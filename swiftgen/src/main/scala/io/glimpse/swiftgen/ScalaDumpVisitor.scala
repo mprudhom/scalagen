@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mysema.scalagen
+package io.glimpse.swiftgen
 
 import japa.parser.ast._
 import japa.parser.ast.body._
@@ -26,7 +26,7 @@ import java.util.Iterator
 import java.util.List
 import org.apache.commons.lang3.StringUtils
 import japa.parser.ast.visitor.GenericVisitorAdapter
-import com.mysema.scalagen.ast.BeginClosureExpr
+import io.glimpse.swiftgen.ast.BeginClosureExpr
 
 object ScalaDumpVisitor {
 

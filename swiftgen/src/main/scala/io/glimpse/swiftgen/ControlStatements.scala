@@ -12,12 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mysema.scalagen
+package io.glimpse.swiftgen
 
 import japa.parser.ast.visitor._
 import java.util.ArrayList
 import UnitTransformer._
-import com.mysema.scalagen.ast.BeginClosureExpr
+import io.glimpse.swiftgen.ast.BeginClosureExpr
 
 object ControlStatements extends ControlStatements
 

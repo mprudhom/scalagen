@@ -1,4 +1,4 @@
-package com.mysema.examples;
+package io.glimpse.examples;
 
 import org.apache.commons.lang3.StringUtils;
 

@@ -5,7 +5,7 @@
  * base on code from https://hickory.dev.java.net/
  * 
  */
-package com.mysema.examples;
+package io.glimpse.examples;
 
 import java.io.IOException;
 import java.io.Writer;

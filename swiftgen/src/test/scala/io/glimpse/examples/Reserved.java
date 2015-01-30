@@ -1,4 +1,4 @@
-package com.mysema.examples;
+package io.glimpse.examples;
 
 public class Reserved {
 

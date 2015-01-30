@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-scala -cp target/dependencies/*:target/classes/ com.mysema.scalagen.Cli $1 $2
+scala -cp target/dependencies/*:target/classes/ io.glimpse.swiftgen.Cli $1 $2

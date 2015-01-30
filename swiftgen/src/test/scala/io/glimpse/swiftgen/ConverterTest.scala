@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mysema.scalagen
+package io.glimpse.swiftgen
 
 import java.io.File
 import org.junit.Test
@@ -23,14 +23,14 @@ class ConverterTest extends AbstractParserTest {
   @Test
   def Convert_Creates_Files {       
     Converter.instance.convert(new File("src/test/scala"), new File("target/test/scala"))    
-    assertTrue(new File("target/test/scala/com/mysema/examples/Bean.scala").exists)
-    assertTrue(new File("target/test/scala/com/mysema/examples/Bean2.scala").exists)
+    assertTrue(new File("target/test/scala/io.glimpse.examples/Bean.scala").exists)
+    assertTrue(new File("target/test/scala/io.glimpse.examples/Bean2.scala").exists)
   }
   
   @Test
   def Convert_Creates_File_with_Content {
     Converter.instance.convert(new File("src/test/scala"), new File("target/test2/scala"))    
-    assertTrue(new File("target/test2/scala/com/mysema/examples/Bean.scala").length > 0)
+    assertTrue(new File("target/test2/scala/io.glimpse.examples/Bean.scala").length > 0)
   }
 
   @Test

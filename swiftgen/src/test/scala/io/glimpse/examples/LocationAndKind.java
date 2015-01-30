@@ -6,7 +6,7 @@
  * 
  */
 
-package com.mysema.examples;
+package io.glimpse.examples;
 
 import javax.tools.JavaFileManager.Location;
 import javax.tools.JavaFileObject.Kind;

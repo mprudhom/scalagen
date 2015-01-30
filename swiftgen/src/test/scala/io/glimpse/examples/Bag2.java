@@ -1,5 +1,5 @@
 
-package com.mysema.examples;
+package io.glimpse.examples;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.mysema.examples;
+package io.glimpse.examples;
 
 public class LongLinesIncludingAVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongClassName extends LongClassToExtendAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa {
 	LongLinesIncludingAVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongClassName x = new LongLinesIncludingAVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongClassName(444, 2, 3, 4, 5, 6, 7, 8, 9, 10);

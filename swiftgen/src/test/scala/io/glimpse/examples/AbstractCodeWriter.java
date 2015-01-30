@@ -4,7 +4,7 @@
  * All rights reserved.
  *
  */
-package com.mysema.examples;
+package io.glimpse.examples;
 
 import static com.mysema.codegen.Symbols.NEWLINE;
 

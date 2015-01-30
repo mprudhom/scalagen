@@ -1,4 +1,4 @@
-package com.mysema.scalagen
+package io.glimpse.swiftgen
 
 sealed trait ScalaVersion
 

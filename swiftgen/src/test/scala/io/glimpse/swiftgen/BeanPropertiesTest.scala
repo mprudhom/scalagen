@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mysema.scalagen
+package io.glimpse.swiftgen
 
 import org.junit.Assert.assertEquals
 import japa.parser.ParseException
@@ -21,7 +21,7 @@ import japa.parser.ast.body.BodyDeclaration
 import japa.parser.ast.body.FieldDeclaration
 import java.io.FileNotFoundException
 import org.junit.Test
-import com.mysema.examples._
+import io.glimpse.examples._
 
 class BeanPropertiesTest extends AbstractParserTest {
 

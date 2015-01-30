@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mysema.scalagen
+package io.glimpse.swiftgen
 
-import com.mysema.scala.BeanUtils
+import io.glimpse.scala.BeanUtils
 import Types._
 
 /**

@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mysema.scalagen
+package io.glimpse.swiftgen
 
 import org.junit.Assert._
 import java.io.FileNotFoundException
 import japa.parser.ParseException
 import japa.parser.ast.CompilationUnit
 import org.junit.Test
-import com.mysema.examples._
+import io.glimpse.examples._
 import UnitTransformer._
 
 class CompanionObjectTest extends AbstractParserTest {

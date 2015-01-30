@@ -1,4 +1,4 @@
-package com.mysema.scalagen
+package io.glimpse.swiftgen
 
 //import japa.parser.ast.`type`._
 import org.junit.Test

@@ -1,4 +1,4 @@
-package com.mysema.examples;
+package io.glimpse.examples;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

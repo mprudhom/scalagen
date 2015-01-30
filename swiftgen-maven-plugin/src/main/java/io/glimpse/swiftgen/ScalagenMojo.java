@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mysema.scalagen;
+package io.glimpse.swiftgen;
 
 import java.io.File;
 
@@ -26,7 +26,7 @@ import org.apache.maven.project.MavenProject;
  * @goal main 
  *
  */
-public class ScalagenMojo extends AbstractMojo {
+public class SwiftgenMojo extends AbstractMojo {
     
     /**
     * @parameter expression="${project}" readonly=true required=true

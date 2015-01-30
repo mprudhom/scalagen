@@ -2,16 +2,10 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.mysema.scalagen</groupId>
-  <artifactId>scalagen-root</artifactId>
-  <version>0.3.2</version>
-  <name>Scalagen - parent</name>
-
-  <parent>
-    <groupId>com.mysema.home</groupId>
-    <artifactId>mysema-source</artifactId>
-    <version>0.3.1</version>
-  </parent>
+  <groupId>io.glimpse.swiftgen</groupId>
+  <artifactId>swiftgen-root</artifactId>
+  <version>0.0.1</version>
+  <name>Swiftgen - parent</name>
 
   <packaging>pom</packaging>
 
@@ -28,8 +22,8 @@
   </organization>
 
   <modules>
-    <module>scalagen</module>
-    <module>scalagen-maven-plugin</module>  
+    <module>swiftgen</module>
+    <module>swiftgen-maven-plugin</module>  
   </modules>
 
 </project>

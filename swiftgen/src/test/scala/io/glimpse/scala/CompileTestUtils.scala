@@ -1,4 +1,4 @@
-package com.mysema.scala
+package io.glimpse.scala
 
 import scala.tools.nsc._
 import scala.io.Source.fromFile

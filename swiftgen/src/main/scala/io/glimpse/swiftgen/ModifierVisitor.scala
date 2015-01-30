@@ -1,4 +1,4 @@
-package com.mysema.scalagen
+package io.glimpse.swiftgen
 
 import japa.parser.ast.BlockComment
 import japa.parser.ast.CompilationUnit
@@ -18,7 +18,7 @@ import japa.parser.ast.`type`.VoidType
 import japa.parser.ast.`type`.WildcardType
 import japa.parser.ast.visitor.GenericVisitor
 import java.util.{ArrayList, Collections}
-import com.mysema.scalagen.ast.BeginClosureExpr
+import io.glimpse.swiftgen.ast.BeginClosureExpr
 
 /**
  * 

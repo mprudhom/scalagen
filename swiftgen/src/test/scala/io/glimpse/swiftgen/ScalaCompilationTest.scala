@@ -12,21 +12,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mysema.scalagen 
+package io.glimpse.swiftgen 
 
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 import org.junit.Test
 import japa.parser.JavaParser
-import com.mysema.scala.CompileTestUtils
+import io.glimpse.scala.CompileTestUtils
 import org.junit.Assert._
 
 class ScalaCompilationTest extends AbstractParserTest with CompileTestUtils {
 
   @Test
   def Compile {
-    val resources = List[File](new File("src/test/scala/com/mysema/examples").listFiles():_*)
+    val resources = List[File](new File("src/test/scala/io.glimpse.examples").listFiles():_*)
     
     // parallel compilation
     val failures = resources.filter(_.getName.endsWith(".java")).map { f =>

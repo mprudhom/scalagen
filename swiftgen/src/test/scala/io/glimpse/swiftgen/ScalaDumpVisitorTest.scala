@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mysema.scalagen
+package io.glimpse.swiftgen
 
 import japa.parser.JavaParser
 import japa.parser.ParseException
@@ -31,7 +31,7 @@ class ScalaDumpVisitorTest extends AbstractParserTest {
   @Test
   def Dump {
     val resources = new ArrayList[File]()
-    resources.addAll(Arrays.asList(new File("src/test/scala/com/mysema/examples").listFiles():_*))
+    resources.addAll(Arrays.asList(new File("src/test/scala/io.glimpse.examples").listFiles():_*))
     for (res <- resources if res.getName.endsWith(".java")) {
       val out = new File("target/" + res.getName.substring(0, res.getName.length() - 5) + ".scala")
       Converter.instance.convertFile(res, out)

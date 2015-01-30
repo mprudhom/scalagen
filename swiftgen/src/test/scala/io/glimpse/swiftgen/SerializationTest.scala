@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mysema.scalagen
+package io.glimpse.swiftgen
 
 import java.io.File
 import java.io.FileInputStream
@@ -20,7 +20,7 @@ import java.io.IOException
 import org.junit.{ Test, Ignore }
 import org.junit.Assert._
 import japa.parser.JavaParser
-import com.mysema.examples._
+import io.glimpse.examples._
 
 class SerializationTest extends AbstractParserTest {
 
@@ -98,13 +98,13 @@ class SerializationTest extends AbstractParserTest {
 
   @Test
   def Constructors {
-    val sources = toScala[com.mysema.examples.Constructors]
+    val sources = toScala[io.glimpse.examples.Constructors]
     assertContains(sources, "class Constructors(first: String, last: String) {")
   }
 
   @Test
   def Constructors2 {
-    val sources = toScala[com.mysema.examples.Constructors2]
+    val sources = toScala[io.glimpse.examples.Constructors2]
     assertContains(sources, "class C(private val a: Int)")
   }
 

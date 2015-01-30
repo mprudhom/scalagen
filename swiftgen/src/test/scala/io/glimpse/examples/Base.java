@@ -1,4 +1,4 @@
-package com.mysema.examples;
+package io.glimpse.examples;
 
 class Base {
     

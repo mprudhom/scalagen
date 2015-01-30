@@ -1,4 +1,4 @@
-package com.mysema.examples;
+package io.glimpse.examples;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;

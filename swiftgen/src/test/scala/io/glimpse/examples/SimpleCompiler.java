@@ -4,7 +4,7 @@
  * All rights reserved.
  * 
  */
-package com.mysema.examples;
+package io.glimpse.examples;
 
 import java.io.File;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package com.mysema.scalagen
+package io.glimpse.swiftgen
 
 object Gender extends Enumeration {
   val MALE = new Gender(0)

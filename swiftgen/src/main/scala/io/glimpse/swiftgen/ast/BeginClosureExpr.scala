@@ -1,4 +1,4 @@
-package com.mysema.scalagen.ast
+package io.glimpse.swiftgen.ast
 
 import japa.parser.ast.expr.NameExpr
 

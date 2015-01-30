@@ -11,15 +11,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mysema.scalagen
+package io.glimpse.swiftgen
 
 import java.io.File
 
 /**
- * Simple harness to facilitate running scalagen from the command line
+ * Simple harness to facilitate running swiftgen from the command line
  */
 object Cli {
-  val usage = "USAGE: scalagen <src-directory> <target-directory>"
+  val usage = "USAGE: swiftgen <src-directory> <target-directory>"
 
   def main(args: Array[String]) {
     if (args.length != 2) {

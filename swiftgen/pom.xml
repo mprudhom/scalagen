@@ -2,17 +2,11 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.mysema.scalagen</groupId>
-  <artifactId>scalagen_${scala.version}</artifactId>
-  <version>0.3.2</version>
-  <name>Scalagen</name>
+  <groupId>io.glimpse.swiftgen</groupId>
+  <artifactId>swiftgen_${scala.version}</artifactId>
+  <version>0.0.1</version>
+  <name>Swiftgen</name>
     
-  <parent>
-    <groupId>com.mysema.home</groupId>
-    <artifactId>mysema-source</artifactId>
-    <version>0.3.0</version>
-  </parent>
-  
   <packaging>jar</packaging>
 
   <inceptionYear>2011</inceptionYear>
@@ -26,8 +20,8 @@
   </licenses>
   
   <scm>
-    <connection>scm:git:git@github.com:mysema/scalagen.git</connection>
-    <url>git@github.com:mysema/scalagen.git</url>
+    <connection>scm:git:git@github.io.glimpse.swiftgen.git</connection>
+    <url>git@github.io.glimpse.swiftgen.git</url>
   </scm>    
     
   <properties>
@@ -236,7 +230,7 @@
       </plugin>
       
       <plugin>
-        <!-- for the test java code in src/test/scala/com/mysema/examples -->
+        <!-- for the test java code in src/test/scala/io/glimpse/examples -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>

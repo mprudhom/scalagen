@@ -4,7 +4,7 @@
  * All rights reserved.
  *
  */
-package com.mysema.examples;
+package io.glimpse.examples;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mysema
+package io.glimpse
 
 import japa.parser.ast.body._
 import japa.parser.ast.expr._
@@ -21,9 +21,9 @@ import _root_.scala.collection.JavaConversions
 import _root_.scala.collection.Set
 
 /**
- * scalagen provides common functionality for this package
+ * swiftgen provides common functionality for this package
  */
-package object scalagen {
+package object swiftgen {
   
   type JavaCollection[T] = java.util.Collection[T]
   

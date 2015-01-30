@@ -6,7 +6,7 @@
  * 
  */
 
-package com.mysema.examples;
+package io.glimpse.examples;
 
 import java.lang.ref.WeakReference;
 import java.net.URL;

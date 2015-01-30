@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mysema.scalagen
+package io.glimpse.swiftgen
 
 import java.io.{File, ByteArrayInputStream}
 import japa.parser.JavaParser
@@ -121,7 +121,7 @@ class Converter(encoding: String, transformers: List[UnitTransformer]) {
   
   private def toOut(inFolderLength: Int, outFolder: File, in: File): File = {
     val offset = if (in.getName == "package-info.java") 10 else 5
-    new File(outFolder, in.getPath.substring(inFolderLength, in.getPath.length-offset)+".scala")
+    new File(outFolder, in.getPath.substring(inFolderLength, in.getPath.length-offset)+".swift")
   }
   
   private def getJavaFiles(file: File): Seq[File] = {
