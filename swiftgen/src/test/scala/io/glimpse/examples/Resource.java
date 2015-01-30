@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010 Mysema Ltd.
+ * Copyright (C) 2015, glimpse.io
  * All rights reserved.
  * 
  */

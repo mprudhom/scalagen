@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010 Mysema Ltd.
+ * Copyright (C) 2015, glimpse.io
  * 
  * base on code from https://hickory.dev.java.net/
  * 
