@@ -114,8 +114,8 @@ class Converter(encoding: String, transformers: List[UnitTransformer]) {
       unit.setImports(new ArrayList[ImportDeclaration]())  
     }    
     val transformed = transformers.foldLeft(unit) { case (u,t) => t.transform(u) }    
-    var visitor = new ScalaDumpVisitor(settings)
-    transformed.accept(visitor, new ScalaDumpVisitor.Context())
+    var visitor = new SwiftDumpVisitor(settings)
+    transformed.accept(visitor, new SwiftDumpVisitor.Context())
     visitor.getSource
   }
   

@@ -28,7 +28,7 @@ import org.apache.commons.lang3.StringUtils
 import japa.parser.ast.visitor.GenericVisitorAdapter
 import io.glimpse.swiftgen.ast.BeginClosureExpr
 
-object ScalaDumpVisitor {
+object SwiftDumpVisitor {
 
   private val NL_THRESHOLD = 100
 
@@ -40,14 +40,14 @@ object ScalaDumpVisitor {
 
   private val SKIPPED_ANNOTATIONS = Set("Override","SuppressWarnings","Nullable")
 
-  private val PRIMITIVES = Map("Boolean"->"Boolean","Byte"->"Byte","Character"->"Char","Double"->"Double",
+  private val PRIMITIVES = Map("Boolean"->"Boolean","Byte"->"Int8","Character"->"Character","Double"->"Double",
       "Float"->"Float","Integer"->"Int","Long"->"Long","Short"->"Short")
 
   private val NO_ARGS_SHORT = Set("toString","asc","desc","hashCode","hasNext","keys","keySet","length","size","values")
 
   private val SHORT_FORM = Set("eq","equals","gt","lt","ne","query","until","!=")
 
-  private val RESERVED = Set("def","match","object","type","val","var")
+  private val RESERVED = Set("func","match","object","type","let","var")
 
   private val JAVA_TYPES = Set("Iterable")
 
@@ -78,18 +78,18 @@ object ScalaDumpVisitor {
 
 
 /**
- * ScalaDumpVisitor is a serializing visitor for CompilationUnit instances
+ * SwiftDumpVisitor is a serializing visitor for CompilationUnit instances
  *
  */
-class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDumpVisitor.Context] with Helpers {
-  import ScalaDumpVisitor._
+class SwiftDumpVisitor(settings: ConversionSettings) extends VoidVisitor[SwiftDumpVisitor.Context] with Helpers {
+  import SwiftDumpVisitor._
 
   private val printer = new SourcePrinter()
 
   def getSource: String = printer.source
 
   private def print(node: Node, arg: Context): String = {
-    val v = new ScalaDumpVisitor(settings)
+    val v = new SwiftDumpVisitor(settings)
     node.accept(v, arg)
     v.getSource
   }
@@ -101,17 +101,18 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
   private def printModifiers(m: Int) {
     val modifiers: RichModifiers = new RichModifiers(m)
     if (modifiers.isTransient) {
-      printer.print("@transient ")
+      printer.print("/* @transient */")
     }
     if (modifiers.isVolatile) {
-      printer.print("@volatile ")
+      printer.print("/* @volatile */")
     }
 
     if (modifiers.isPrivate) {
       printer.print("private ")
     } else if (modifiers.isProtected) {
-      printer.print("protected ")
+      printer.print("internal ")
     } else if (modifiers.isPublic) {
+      printer.print("public ")
     }
 
     if (modifiers.isLazy) {
@@ -119,11 +120,11 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
     }
 
     if (modifiers.isImplicit) {
-      printer.print("implicit ")
+      printer.print("/* implicit */ ")
     }
 
     if (modifiers.isAbstract) {
-      printer.print("abstract ")
+      printer.print("/* abstract */ ")
     }
     if (modifiers.isStatic) {
       // skip
@@ -178,7 +179,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
     if (args != null && !args.isEmpty) {
       val typeArg = arg.typeArg
       arg.typeArg = true
-      printer.print("[")
+      printer.print("<")
       var i = args.iterator()
       while (i.hasNext) {
         var t = i.next()
@@ -187,14 +188,14 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
           printer.print(", ")
         }
       }
-      printer.print("]")
+      printer.print(">")
       arg.typeArg = typeArg
     }
   }
 
   private def printTypeParameters(args: List[TypeParameter], arg: Context) {
     if (args != null) {
-      printer.print("[")
+      printer.print("<")
       var i = args.iterator()
       while (i.hasNext) {
         var t = i.next()
@@ -203,7 +204,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
           printer.print(", ")
         }
       }
-      printer.print("]")
+      printer.print(">")
     }
   }
 
@@ -251,10 +252,10 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
       .filter(i => !i.isAsterisk && !i.isStatic)
       .map(i => split(i.getName).swap).toMap
 
-    printer.printLn("//remove if not needed")
-    printer.printLn("import scala.collection.JavaConversions._")
+    // printer.printLn("//remove if not needed")
+    // printer.printLn("import scala.collection.JavaConversions._")
     if (hasTryWithResources(n)) {
-      printer.printLn("import resource._ //use scala-arm from http://jsuereth.com/scala-arm/")
+      // printer.printLn("import resource._ //use scala-arm from http://jsuereth.com/scala-arm/")
     }
     printer.printLn()
     
@@ -296,14 +297,14 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
   }
 
   def visit(n: PackageDeclaration, arg: Context) {
-    printer.print("package ")
+    // printer.print("package ")
     if (!isEmpty(n.getAnnotations)) {
-      printer.print(split(n.getName)._1)
+      // printer.print(split(n.getName)._1)
     } else {
-      n.getName.accept(this, arg)
+      // n.getName.accept(this, arg)
     }
-    printer.printLn()
-    printer.printLn()
+    // printer.printLn()
+    // printer.printLn()
   }
 
   def visit(n: NameExpr, arg: Context) {
@@ -323,11 +324,12 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
   def visit(n: QualifiedNameExpr, arg: Context) {
     n.getQualifier.accept(this, arg)
     printer.print(".")
+    // TODO: how to implement anonymous classes?
     visitName(n.getName)
   }
 
   def visit(n: ImportDeclaration, arg: Context) {
-    printer.print("import ")
+    printer.print("// import ")
     if (n.getName.getName.endsWith(".Array") && !n.isAsterisk) {
       val className = n.getName.getName
       val pkg = className.substring(0, className.lastIndexOf('.'))
@@ -348,9 +350,9 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
     printMemberAnnotations(n.getAnnotations, arg)
     printModifiers(n.getModifiers)
     if (n.getModifiers.isObject) {
-      printer.print("object ")
+      printer.print("extension ")
     } else if (n.isInterface) {
-      printer.print("trait ")
+      printer.print("protocol ")
     } else {
       printer.print("class ")
     }
@@ -381,7 +383,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
       printer.print("   ")
     }
     if (!superTypes.isEmpty) {
-      printer.print(" extends ")
+      printer.print(": ")
       var i = superTypes.iterator()
       i.next().accept(this, arg)
       superInvocation.foreach { s =>
@@ -407,7 +409,8 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
     if (members == null) {
       return null
     }
-    members.collectFirst({ case c: ConstructorDeclaration => c }).getOrElse(null)
+    return null // no special first-constructor handling in Swift
+    // members.collectFirst({ case c: ConstructorDeclaration => c }).getOrElse(null)
   }
 
   def visit(n: EmptyTypeDeclaration, arg: Context) {
@@ -415,11 +418,11 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
   }
 
   def visit(n: JavadocComment, arg: Context) {
-    printer.printLn("/**")
+    // printer.printLn("/**")
     for (line <- StringUtils.split(n.getContent.trim, '\n')) {
-      printer.printLn(" " + line.trim)
+      printer.printLn("/// " + line.trim)
     }
-    printer.printLn(" */")
+    // printer.printLn(" */")
   }
 
   def visit(n: ClassOrInterfaceType, arg: Context) {
@@ -433,7 +436,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
       printer.print("java.lang.")
     }
     if (n.getName == "Object") {
-      printer.print(if (arg.inObjectEquals || arg.typeArg) "Any" else "AnyRef")
+      printer.print(if (arg.inObjectEquals || arg.typeArg) "Any" else "AnyObject")
     } else if (n.getScope == null && n.getName == "Array") {
       // TODO : only if Array import is present
       printer.print("_Array")
@@ -474,13 +477,14 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
   def visit(n: ReferenceType, arg: Context) {
     val typeArg = arg.typeArg
     for (i <- 0 until n.getArrayCount) {
-      printer.print("Array[")
+      printer.print("Array<")
       arg.typeArg = true
     }
     n.getType.accept(this, arg)
+    printer.print("?") // TODO: make primitives non-optional
     arg.typeArg = typeArg
     for (i <- 0 until n.getArrayCount) {
-      printer.print("]")
+      printer.print(">")
     }
   }
 
@@ -500,7 +504,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
     val oldType = arg.assignType
     arg.assignType = n.getType
     printJavadoc(n.getJavaDoc, arg)
-    val modifier = if (ModifierSet.isFinal(n.getModifiers)) "val " else "var "
+    val modifier = if (ModifierSet.isFinal(n.getModifiers)) "let " else "var "
     val i = n.getVariables.iterator()
     while (i.hasNext) {
       var v = i.next()
@@ -509,7 +513,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
       printer.print(modifier)
 
       v.getId.accept(this, arg)
-      if (v.getInit == null || modifier != "val ") {
+      if (v.getInit == null || modifier != "let ") {
         if (v.getId.getName.endsWith("_")) {
           printer.print(" ")
         }
@@ -517,7 +521,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
         n.getType.accept(this, arg)
       }
       if (v.getInit == null) {
-        printer.print(" = _")
+        printer.print("! = nil")
       } else {
         printer.print(" = ")
         v.getInit.accept(this, arg)
@@ -569,9 +573,9 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
     arg.arrayAccess = true
     n.getName.accept(this, arg)
     arg.arrayAccess = arrayAccess
-    printer.print("(")
+    printer.print("[")
     n.getIndex.accept(this, arg)
-    printer.print(")")
+    printer.print("]")
   }
 
   def visit(n: ArrayCreationExpr, arg: Context) {
@@ -582,7 +586,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
         arg.assignType.accept(this, arg)
       } else {
         val max = n.getArrayCount + 1
-        printer.print("Array.ofDim[")
+        printer.print("Array<")
         for (i <- 0 until max) {
           val typeArg = arg.typeArg
           arg.typeArg = true
@@ -592,10 +596,11 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
             printer.print(",")
           }
         }
-        printer.print("]")
+        printer.print(">")
       }
 
-      printer.print(n.getDimensions.map(print(_,arg)).mkString("(",", ",")"))
+      printer.print(n.getDimensions.map(print(_,arg)).mkString("(count: ",", ",", repeatedValue: nil)"))
+      // printer.print(n.getDimensions.map(print(_,arg)).mkString("(",", ",")"))
     } else {
       n.getInitializer.accept(this, arg)
     }
@@ -661,27 +666,26 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
   def visit(n: CastExpr, arg: Context) {
     n.getExpr.accept(this, arg)
     if (n.getType.isInstanceOf[PrimitiveType]) {
-      printer.print(".to")
+      printer.print(" as ")
       n.getType.accept(this, arg)
     } else {
-      printer.print(".asInstanceOf[")
+      printer.print(" as ")
       n.getType.accept(this, arg)
-      printer.print("]")
     }
   }
 
   def visit(n: ClassExpr, arg: Context) {
-    printer.print("classOf[")
+    printer.print("")
     arg.classOf = true
     n.getType.accept(this, arg)
     arg.classOf = false
-    printer.print("]")
+    printer.print(".self")
   }
 
   def visit(n: ConditionalExpr, arg: Context) {
-    printer.print("if (")
+    printer.print("if ")
     n.getCondition.accept(this, arg)
-    printer.print(") ")
+    printer.print(" ")
     n.getThenExpr.accept(this, arg)
     printer.print(" else ")
     n.getElseExpr.accept(this, arg)
@@ -699,21 +703,21 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
 
   def visit(n: FieldAccessExpr, arg: Context) {
     n.getScope.accept(this, arg)
-    printer.print(".")
+    printer.print("?.")
     visitName(n.getField)
   }
 
   def visit(n: InstanceOfExpr, arg: Context) {
     n.getExpr.accept(this, arg)
-    printer.print(".isInstanceOf[")
+    printer.print(" is ")
     n.getType.accept(this, arg)
-    printer.print("]")
+    printer.print("")
   }
 
   def visit(n: CharLiteralExpr, arg: Context) {
-    printer.print("'")
+    printer.print("\"")
     printer.print(n.getValue)
-    printer.print("'")
+    printer.print("\"")
   }
 
   def visit(n: DoubleLiteralExpr, arg: Context) {
@@ -762,7 +766,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
   }
 
   def visit(n: NullLiteralExpr, arg: Context) {
-    printer.print("null")
+    printer.print("nil")
   }
 
   def visit(n: ThisExpr, arg: Context) {
@@ -770,7 +774,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
       n.getClassExpr.accept(this, arg)
       printer.print(".")
     }
-    printer.print("this")
+    printer.print("self")
   }
 
   def visit(n: SuperExpr, arg: Context) {
@@ -824,11 +828,12 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
       n.getScope.accept(this, arg)
       printer.print(".")
     }
-    printer.print("new ")
+    // printer.print("new ")
     printTypeArgs(n.getTypeArgs, arg)
     n.getType.accept(this, arg)
     printArguments(n.getArgs, arg)
     if (n.getAnonymousClassBody != null) {
+      // TODO: how to implement anonymous classes?
       printer.printLn(" {")
       printer.indent()
       printMembers(n.getAnonymousClassBody, arg)
@@ -857,6 +862,15 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
 //      case Op.preDecrement => "-= 1"
       case _ => ""
     })
+
+    n.getExpr.accept(this, arg)
+    printer.print(n.getOperator match {
+      case Op.posIncrement => "++"
+      case Op.posDecrement => "--"
+      case _ => ""
+    })
+
+    /*
     if (n.getOperator == Op.posIncrement || n.getOperator == Op.posDecrement) {
       printer.print("{")  
     }        
@@ -876,7 +890,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
       })  
       printer.print("}") 
     }
-    
+    */
   }
 
   def visit(n: ConstructorDeclaration, arg: Context) {
@@ -893,7 +907,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
     }
     printModifiers(n.getModifiers)
     if (!first) {
-      printer.print("def this")
+      printer.print("init")
       printTypeParameters(n.getTypeParameters, arg)
     }
     printer.print("(")
@@ -926,7 +940,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
     if (hasOverride || isHashCode(n) || isEquals(n) || isToString(n)) {
       printer.print("override ")
     }
-    printer.print("def ")
+    printer.print("func ")
     visitName(n.getName)
     printTypeParameters(n.getTypeParameters, arg)
     printer.print("(")
@@ -946,10 +960,15 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
     }
     printer.print(")")
     if (!(n.getType.isInstanceOf[VoidType]) || n.getBody == null) {
-      printer.print(": ")
+      printer.print(" -> ")
       n.getType.accept(this, arg)
+      
+      // if (!n.isVarArgs) {
+      // }
     }
     if (n.getBody != null) {
+      n.getBody.accept(this, arg)
+      /*
       if (!(n.getType.isInstanceOf[VoidType])) {
         printer.print(" = ")
         if (n.getBody.getStmts.size == 1 && printer.lineLength < NL_THRESHOLD) {
@@ -969,6 +988,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
         n.getBody.accept(this, arg)
         arg.noUnwrap = origUnwrap
       }
+        */
     }
   }
 
@@ -976,19 +996,19 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
     printAnnotations(n.getAnnotations, arg)
     printModifiers(n.getModifiers)
     if (n.getModifiers.isProperty) {
-       printer.print(if (n.getModifiers.isFinal) "val " else "var ")
+       printer.print(if (n.getModifiers.isFinal) "let " else "var ")
     }
     n.getId.accept(this, arg)
     printer.print(": ")
     for (i <- 0 until n.getId.getArrayCount) {
-       printer.print("Array[")
+       printer.print("Array<")
     }
     n.getType.accept(this, arg)
     for (i <- 0 until n.getId.getArrayCount) {
-      printer.print("]")
+      printer.print(">")
     }
     if (n.isVarArgs) {
-      printer.print("*")
+      printer.print("...")
     }
   }
   
@@ -996,7 +1016,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
     printAnnotations(n.getAnnotations, arg)
     printModifiers(n.getModifiers)
     if (n.getModifiers.isProperty) {
-       printer.print(if (n.getModifiers.isFinal) "val " else "var ")
+       printer.print(if (n.getModifiers.isFinal) "let " else "var ")
     }
     n.getId.accept(this, arg)
 
@@ -1021,14 +1041,14 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
   def visit(n: ExplicitConstructorInvocationStmt, arg: Context) {
     if (n.isThis) {
       printTypeArgs(n.getTypeArgs, arg)
-      printer.print("this")
+      printer.print("self.init")
     } else {
       if (n.getExpr != null) {
         n.getExpr.accept(this, arg)
         printer.print(".")
       }
       printTypeArgs(n.getTypeArgs, arg)
-      printer.print("super")
+      printer.print("super.init")
     }
     printArguments(n.getArgs, arg)
   }
@@ -1059,7 +1079,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
 
   def visit(n: VariableDeclarationExpr, arg: Context) {
     val asParameter = n.getModifiers == -1
-    var modifier = if (ModifierSet.isFinal(n.getModifiers)) "val " else "var "
+    var modifier = if (ModifierSet.isFinal(n.getModifiers)) "let " else "var "
     var i = n.getVars.iterator()
     while (i.hasNext) {
       var v = i.next()
@@ -1087,7 +1107,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
               printer.print(DEFAULTS(ptype.getType))
             }            
           } else {
-            printer.print("null")
+            printer.print("nil")
           }
           //printer.print(if (v.getInit() == null) "_" else "null")
         }
@@ -1232,8 +1252,9 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
   def visit(n: ReturnStmt, arg: Context) {
     if (n.getExpr != null) {
       if (arg.returnOn) {
-        printer.print("return ")
+        // printer.print("return ")
       }
+      printer.print("return ")
       n.getExpr.accept(this, arg)
     } else {
       printer.print("return")
@@ -1319,9 +1340,9 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
   }
 
   def visit(n: IfStmt, arg: Context) {
-    printer.print("if (")
+    printer.print("if ")
     n.getCondition.accept(this, arg)
-    printer.print(") ")
+    printer.print(" ")
     n.getThenStmt.accept(this, arg)
     if (n.getElseStmt != null) {
       printer.print(" else ")
@@ -1330,9 +1351,9 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
   }
 
   def visit(n: WhileStmt, arg: Context) {
-    printer.print("while (")
+    printer.print("while ")
     n.getCondition.accept(this, arg)
-    printer.print(") ")
+    printer.print(" ")
     n.getBody.accept(this, arg)
   }
 
@@ -1354,9 +1375,9 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
   }
 
   def visit(n: ForeachStmt, arg: Context) {
-    printer.print("for (")
+    printer.print("for ")
     n.getVariable.getVars.get(0).accept(this, arg)
-    printer.print(" <- ")
+    printer.print(" in ")
     n.getIterable.accept(this, arg)
 
     var body = n.getBody
@@ -1369,7 +1390,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
             printer.print("     ")
           }
           fe.getVariable.getVars.get(0).accept(this, arg)
-          printer.print(" <- ")
+          printer.print(" in ")
           fe.getIterable.accept(this, arg)
           body = fe.getBody
         }
@@ -1385,7 +1406,7 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
       }
     }
 
-    printer.print(") ")
+    printer.print(" ")
     body.accept(this, arg)
 
   }
@@ -1406,13 +1427,13 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
     }
 
     // comparison
-    printer.print("while (")
+    printer.print("while ")
     if (n.getCompare != null) {
       n.getCompare.accept(this, arg)
     } else {
       printer.print("true")
     }
-    printer.print(") ")
+    printer.print(" ")
 
     if (n.getUpdate != null && n.getBody.isInstanceOf[BlockStmt]) {
       // merge updates into block
@@ -1444,12 +1465,13 @@ class ScalaDumpVisitor(settings: ConversionSettings) extends VoidVisitor[ScalaDu
 
   def visit(n: SynchronizedStmt, arg: Context) {
     if (n.getExpr != null) {
-      printer.print("synchronized (")
+      printer.print("/* synchronized (")
       n.getExpr.accept(this, arg)
-      printer.print(") ")
+      printer.print(") */ ")
     } else {
-      printer.print("synchronized ")
+      printer.print("/* synchronized */ ")
     }
+    // TODO: remove block from enclosing braces
     n.getBlock.accept(this, arg)
   }
   

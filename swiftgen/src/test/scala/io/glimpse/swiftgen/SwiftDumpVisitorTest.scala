@@ -26,7 +26,7 @@ import java.util.List
 import org.apache.commons.io.FileUtils
 import org.junit.Test
 
-class ScalaDumpVisitorTest extends AbstractParserTest {
+class SwiftDumpVisitorTest extends AbstractParserTest {
 
   @Test
   def Dump {

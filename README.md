@@ -1,44 +1,83 @@
 ## Swiftgen 
 
-**Java to Scala conversion**
+**Java to Swift conversion**
 
-Swiftgen is a Java to Scala conversion tool. It uses a Java based parser for Java sources and provides modular 
-transformation of the AST to match Scala idioms. The resulting transformed AST is serialized into Scala format.
+Swiftgen is a Scala-based Java to Swift conversion tool. It is based
+on https://github.com/mysema/scalagen, since Swift syntax is very
+similar to Scala.
 
-Here is a list of example Java sources which have been successfully converted by Swiftgen:
-https://github.io.glimpse.swiftgen/tree/master/swiftgen/src/test/scala/io.glimpse.examples
+It is almost guaranteed to generate uncompilable Swift code, but could
+be useful as a starting point for seeing how Java code might be
+portrayed in Swift. Among the many features that are not implemented at:
 
-Swiftgen has also been tested on our own projects such as Querydsl, RDFBean, Codegen and some customer projects.
+ * Exceptions, try/catch
+ * synchronized blocks
+ * Non-static inner classes
+ * Struct/enum generation
 
-### Usage
+### Example
 
-Swiftgen provides direct Maven support via a plugin. You can use it directly via the command line like this
+Java 8 doesn't work, so if it is installed, you need to first
+manually set your JAVA HOME:
 
-    mvn io.glimpse.swiftgen:swiftgen-maven-plugin:0.2.2:main -DtargetFolder=target/scala
+```bash
+JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_17.jdk/Contents/Home
+```
+
+You can then run some tests and see the converted output:
+
+```bash
+mvn -f swiftgen/pom.xml test -Dtest=io.glimpse.swiftgen.ConverterTest
+```
+
+One example of a file that happens to compile can be seen with:
+
+```bash
+swiftc swiftgen/target/test2/scala/io/glimpse/examples/Literal.swift
+```
+
+The source `Literal.java` is:
+
+```java
+package io.glimpse.examples;
+
+
+public class Literal {
     
-and for test sources
-
-    mvn io.glimpse.swiftgen:swiftgen-maven-plugin:0.2.2:test -DtargetFolder=target/scala
-
-Here is the snippet for an explicit configuration in a POM:
-
-    <plugin>
-      <groupId>io.glimpse.swiftgen</groupId>
-      <artifactId>swiftgen-maven-plugin</artifactId>
-      <version>0.2.2</version>
-    </plugin>
+    public void doSomething() {
+        final String s = query("");
+        System.out.println(s);
+    }
     
-To convert main sources run
+    public void doSomething2() {
+        System.out.println(query(""));
+    }
 
-    mvn swiftgen:main
-    
-and to convert test sources run 
+    private String query(String string) {
+        return null;
+    }
 
-    mvn swiftgen:test
+}
+```
 
-The conversion results are to be seen as a starting point for the Java to Scala conversion. 
-Some elements are not transformed correctly for various reasons and will need manual intervention.
+With results in the following `Literal.swift` code:
 
-### Development
+```swift
+public class Literal {
 
-Swiftgen development instructions are here https://github.io.glimpse.swiftgen/wiki/Swiftgen-development
+  public func doSomething(){
+    let s = query("")
+    println(s)
+  }
+
+  public func doSomething2(){
+    println(query(""))
+  }
+
+  private func query(string: String?) -> String?{
+    return nil
+  }
+}
+```
+
+

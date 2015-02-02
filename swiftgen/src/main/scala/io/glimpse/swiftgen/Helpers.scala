@@ -21,7 +21,7 @@ import _root_.scala.collection.Set
 import java.util.ArrayList
 
 /**
- * Common helper methods for transformers and ScalaDumpVisitor
+ * Common helper methods for transformers and SwiftDumpVisitor
  */
 trait Helpers {
   import Types._
